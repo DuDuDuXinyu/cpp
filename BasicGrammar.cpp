@@ -66,7 +66,7 @@ int main()
 }
 #endif
 
-
+#if 0
 
 //c++输入输出头文件
 
@@ -80,4 +80,22 @@ int main()
 	scanf("%d", &a);
 	cin >> b, c;
 	cout << "Hello World!!!" << endl;
+}
+#endif
+
+
+#include <iostream>
+
+using namespace std;//输入输出的命名空间
+
+extern "C" int Add(int left, int right)
+{
+	return left + right;
+}
+
+
+int main()
+{
+	cout << Add(10, 20) << endl;
+	return 0;
 }
