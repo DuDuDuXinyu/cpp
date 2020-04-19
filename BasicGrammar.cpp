@@ -88,14 +88,66 @@ int main()
 
 using namespace std;//输入输出的命名空间
 
-extern "C" int Add(int left, int right)
+#if 0
+ int Add(int left, int right)
 {
 	return left + right;
 }
 
+ double Add(int left, int right)
+{
+	return left + right;
+}
 
 int main()
 {
 	cout << Add(10, 20) << endl;
 	return 0;
+}
+#endif
+#if 0
+int main()
+{
+	double a = 12.34;
+	const int& ra = a;
+	cout << a << ra << endl;
+	a = 34.56;
+	cout << a << ra << endl;
+	return 0;
+}
+#endif
+
+#if 0
+void Swap(int& a, int& b)
+{
+	cout << a << b << endl;
+	int temp = a;
+	a = b;
+	b = temp;
+}
+
+int main()
+{
+	int a1 = 1, b1 = 2;
+	int &a = a1,&b = b1;
+	Swap(a, b);
+	cout << a << b << endl;
+}
+#endif
+
+#if 0
+int main()
+{
+	int a = 0;
+	int& ra = a;
+	int& rb = ra;
+	cout << a << endl;
+	cout << ra << endl;
+	cout << rb << endl;
+}
+#endif
+
+int main()
+{
+
 }
