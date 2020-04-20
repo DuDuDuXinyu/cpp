@@ -147,7 +147,70 @@ int main()
 }
 #endif
 
+#if 0
 int main()
 {
+	const int a = 10;
+	int array[a];
+	return 0;
+}
+#endif
+
+#if 0
+
+#define MAX(a,b) a++;b++;cout<<a<<b<<endl;
+	
+	
+int main()
+{
+	int a = 1, b = 2;
+	MAX(a,b);
+	return 0;
+}
+#endif
+#if 0
+int main()
+{
+	int a = 10;
+	auto p1 = &a;
+	auto* p2 = &a;
+	auto ra1 = a;
+	auto& ra2 = a;
+	auto b = a;
+	auto c = 'a';
+	cout << typeid(a).name() << endl;
+	cout << typeid(p1).name() << endl;
+	cout << typeid(p2).name() << endl;
+	cout << typeid(ra1).name() << endl;
+	cout << typeid(ra2).name() << endl;
+	cout << typeid(b).name() << endl;   
+	cout <<typeid(c).name() << endl;
+	return 0;
+}
+#endif
+
+#if 0
+int main()
+{
+	int arr[] = { 1,2,3,4,5 };
+	for (auto& a : arr)
+		a *= 2;
+	for (auto a : arr)
+		cout << a << endl;
+	return 0;
+}
+#endif
+#if 0
+void f(int) { cout << "f(int)" << endl; }
+
+void f(int*) { cout << "f(int*)" << endl; }
+
+int main()
+{
+	int* p1 = nullptr;
+	f(p1);
+	return 0;
 
 }
+#endif
+
