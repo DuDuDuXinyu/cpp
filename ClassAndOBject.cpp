@@ -605,7 +605,209 @@ int main()
 
 }
 #endif 
+#if 0
 
+int main()
+{
+	int a = 10, b = 20, c = 30;
+	a = b = c;
+	cout << a << b << c << endl;
+	return 0;
+}
+#endif
+
+#if 0
+class Time
+{
+public:
+	Time(int year = 1970, int month = 1, int day = 1)
+	{
+		_year = year;
+		_month = month;
+		_day = day;
+	}
+	Time(const Time& t)
+	{
+		_year = t._year;
+		_month = t._month;
+		_day = t._day;
+		cout << "拷贝构造函数" << endl;
+	}
+	void printTime()
+	{
+		cout << _year << "/" << _month << "/" << _day << endl;
+	}
+	Time operator = (const Time& t)
+	{
+		if (this != &t)
+		{
+			_year = t._year;
+			_month = t._month;
+			_day = t._day;
+		}
+		return *this;
+	}
+
+	//第days天之后是哪一天
+
+	Time operator+(int days)
+	{
+		Time temp(*this);
+		temp._day += days;
+		return temp;
+	}
+
+	//第days天之后是哪一天
+
+	Time& operator+=(int days)
+	{
+		_day += days;
+		return *this;
+	}
+
+	//第days前之后是哪一天
+
+	Time operator-(int days)
+	{
+		Time temp(*this);
+		temp._day += days;
+		return temp;
+	}
+	//第days前之后是哪一天
+
+	Time operator-=(int days);
+	//第days前之后是哪一天
+
+	Time operator-(const Time& t);
+private:
+	int _year;
+	int _month;
+	int _day;
+};
+#endif
+
+#if 0
+class Time
+{
+public:
+	Time(int year = 1970, int month = 1, int day = 1)
+	{
+		_year = year;
+		_month = month;
+		_day = day;
+	}
+	Time(const Time& t)
+	{
+		_year = t._year;
+		_month = t._month;
+		_day = t._day;
+		cout << "asfgasg" << endl;
+	}
+	void printTime()
+	{
+		cout << _year << "/" << _month << "/" << _day << endl;
+	}
+
+	void fun()const
+	{
+		//_year = 1;
+		_day = 1;
+	}
+private:
+	int _year;
+	int _month;
+	mutable int _day;
+};
+int main()
+{
+	Time t(2020, 4, 27);
+	t.printTime();
+	t.fun();
+	t.printTime();
+	return 0;
+}
+#endif
+#if 0
+class Time
+{
+public:
+	Time(int year = 1970, int month = 1, int day = 1)
+	{
+		_year = year;
+		_month = month;
+		_day = day;
+	}
+	Time(const Time& t)
+	{
+		_year = t._year;
+		_month = t._month;
+		_day = t._day;
+		cout << "asfgasg" << endl;
+	}
+	void printTime()
+	{
+		cout << _year << "/" << _month << "/" << _day << endl;
+	}
+
+	void fun()const
+	{
+		//_year = 1;
+		_day = 1;
+	}
+private:
+	int _year;
+	int _month;
+	mutable int _day;
+};
+
+int main()
+{
+	Time t1(2020, 4, 27);
+	const Time t2(2020, 4, 27);
+
+	//printTime是一个普通的成员函数，该函数可以修改成员
+	//但是t2是const修饰的所以不能调用非const修饰的函数
+	
+	//t2.printTime();
+	return 0;
+
+}
+#endif
+
+#if 0
+class Time
+{
+public:
+	Time(int year = 1970, int month = 1, int day = 1)
+		:_year(year)
+		,_month(month)
+		,_day(day)
+	{
+	}
+	Time(const Time& t)
+	{
+		_year = t._year;
+		_month = t._month;
+		_day = t._day;
+		cout << "asfgasg" << endl;
+	}
+	void printTime()
+	{
+		cout << _year << "/" << _month << "/" << _day << endl;
+	}
+private:
+	int _year;
+	int _month;
+	int _day;
+};
+int main()
+{
+	Time t1(2020, 4, 27);
+	t1.printTime();
+	
+	return 0;
+}
+#endif
 
 int main()
 {
