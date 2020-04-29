@@ -809,7 +809,231 @@ int main()
 }
 #endif
 
+#if 0
+
+//count在各自的对象中是单独存在，不会改变一个而让别的改变
+
+class Time
+{
+public:
+	Time(int year = 1970, int month = 1, int day = 1)
+		:_year(year)
+		, _month(month)
+		, _day(day)
+		,count(0)
+	{
+		count++;
+		cout << "构造函数" << endl;
+	}
+	Time(Time& t)
+		:_year(t._year)
+		, _month(t._month)
+		, _day(t._day)
+		, count(++t.count)
+	{
+		cout << "asfgasg" << endl;
+	}
+	~Time()
+	{
+		count--;
+	}
+	void printTime()
+	{
+		cout << _year << "/" << _month << "/" << _day << endl;
+	}
+private:
+	int _year;
+	int _month;
+	int _day;
+	int count;
+};
 int main()
 {
+	Time t1(2020, 4, 27);
+	Time t2(t1);
 
+	return 0;
+}
+#endif 
+
+#if 0
+
+//静态变量不属于类的成员变量，所以不占用类的空间
+class Time
+{
+public:
+	Time(int year = 1970, int month = 1, int day = 1)
+		:_year(year)
+		, _month(month)
+		, _day(day)
+	{
+		count++;
+		cout << "构造函数" << endl;
+	}
+	Time(Time& t)
+		:_year(t._year)
+		, _month(t._month)
+		, _day(t._day)
+	{
+		count++;
+		cout << "asfgasg" << endl;
+	}
+	~Time()
+	{
+		count--;
+	}
+	void printTime()
+	{
+		cout << _year << "/" << _month << "/" << _day << endl;
+	}
+private:
+	int _year;
+	int _month;
+	int _day;
+	static int count;
+};
+int Time::count = 0;
+int main()
+{
+	Time t1(2020, 4, 27);
+	Time t2(t1);
+
+	cout << sizeof(Time) << endl;
+
+	return 0;
+}
+#endif
+
+#if 0
+
+class Time
+{
+public:
+	Time(int year = 1970, int month = 1, int day = 1)
+		:_year(year)
+		, _month(month)
+		, _day(day)
+	{
+		count++;
+		cout << "构造函数" << endl;
+	}
+	Time(Time& t)
+		:_year(t._year)
+		, _month(t._month)
+		, _day(t._day)
+	{
+		count++;
+		cout << "asfgasg" << endl;
+	}
+	~Time()
+	{
+		count--;
+	}
+
+	//静态成员函数没有this指针
+	//所以静态成员函数不能用const来修饰
+	//因为，const修饰成员函数的本质是修改this指针
+	//无法访问非静态的成员
+
+	static int GetCount()
+	{
+		//cout << this << endl;
+		//cout << _year << endl;
+
+		return count;
+	}
+	void printTime()
+	{
+		cout << _year << "/" << _month << "/" << _day << endl;
+	}
+private:
+	int _year;
+	int _month;
+	int _day;
+	static int count;
+};
+int Time::count = 0;
+int main()
+{
+	Time t1(2020, 4, 27);
+	Time t2(t1);
+
+	//会报错，因为count是私有的，不能在类外使用
+	//cout << Time::count << endl;
+	cout << t1.GetCount() << endl;
+	
+	return 0;
+}
+#endif
+
+//友元类
+class Time
+{
+	//Data是Time的友元类
+	//Data可以访问Time的成员
+	//Time不可以访问Data的成员
+	friend class Data;
+private:
+	int hour = 10;
+	int minute = 05;
+	int second = 59;
+};
+
+class Data
+{
+	//友元函数，可以访问该类中的成员变量，private和protected的也可以访问
+	friend ostream& operator << (ostream& _cout, const Data& d);
+public:
+	Data(int year = 1970, int month = 1, int day = 1)
+		:_year(year)
+		, _month(month)
+		, _day(day)
+	{
+		cout << "构造函数" << endl;
+	}
+	Data(Data& t)
+		:_year(t._year)
+		, _month(t._month)
+		, _day(t._day)
+	{
+		cout << "拷贝构造函数" << endl;
+	}
+	void printTime()
+	{
+		cout << _year << "/" << _month << "/" << _day << endl;
+		cout << _t.hour << "/" << _t.minute << "/" << _t.second<< endl;
+	}
+
+
+	/*void operator << (ostream& _cout)
+	{
+		_cout << _year << "/" << _month << "/" << _day << endl;
+	}*/
+private:
+	int _year;
+	int _month;
+	int _day;
+	Time _t;
+};
+//第一个参数必须是oatream&
+//要有返回值，返回ostream&--->原因是为了支持连续打印
+//所以我们只能把这个重载为全局函数
+ostream& operator << (ostream& _cout,const Data& d)
+{
+	_cout << d._year << "/" << d._month << "/" << d._day;
+	return _cout;
+}
+int main()
+{
+	Data d1(2020, 4, 27);
+
+	//这种调用不符合我们正常的书写规则
+	//<<规定：第一个参数必须是ostream对象的引用
+	//对应类中的重载函数
+	//t1 << cout;
+
+	cout << d1<<endl;
+	d1.printTime();
+	
+	return 0;
 }
