@@ -253,6 +253,40 @@ void TestString7()
 	cout << net << endl;
 }
 
+void TestString8()
+{
+	string s("hello");
+
+	reverse(s.begin(), s.end());
+	cout << s << endl;
+
+	reverse(s.rbegin(), s.rend());
+	cout << s << endl;
+}
+
+void TestString9()
+{
+	string s1("hello");
+	string s2(" world!");
+
+	cout << s1 + s2 << endl;
+
+	if (s1 < s2)
+		cout << s1 << "<" << s2 << endl;
+	else	
+		cout << s1 << "<" << s2 << endl;
+}
+
+void TestString10()
+{
+	string s("hello");
+	while (getline(cin, s))
+	{
+		cout << s << endl;
+	}
+
+}
+
 int main()
 {
 	//TestString1();
@@ -262,7 +296,10 @@ int main()
 	//TestPushBack();
 	//TestString5();
 	//TestString6();
-	TestString7();
+	//TestString7();
+	//TestString8();
+	//TestString9();
+	//TestString10();
 
 	return 0;
 }
