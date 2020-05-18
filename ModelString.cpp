@@ -1,4 +1,5 @@
 #include <iostream>
+#include <assert.h>
 #pragma warning (disable:4996)
 
 using namespace std;
@@ -162,6 +163,11 @@ namespace mine
 {
 	class string
 	{
+		friend ostream& operator<<(ostream& _cout, const mine::string& s);
+
+	public:
+		typedef char* iterator;
+
 	public:
 		string(const char* str = "")
 		{
@@ -175,6 +181,22 @@ namespace mine
 			strcpy(_str, str);
 		}
 
+		string(const string& s, size_t pos, size_t n = npos)
+		{
+			size_t len = s.size();
+			if (pos > len)
+				pos = len;
+
+			if (n > len - pos)
+				n = len - pos;
+
+			_str = new char[n - 1];
+			strncpy(_str, s.c_str() + pos, n);
+			_size = n;
+			_capacity = n;
+			_str[_size] = '\0';
+		}
+
 		string(const string& s)
 			:_str(nullptr)
 		{
@@ -182,20 +204,30 @@ namespace mine
 			this->swap(str);
 		}
 
-		string& operator=(string s)
+		string& operator=(const string& s)
 		{
-			this->swap(s);
+			if (this != &s)
+			{
+				string str(s._str);
+				this->swap(str);
+			}
+			
 			return *this;
 		}
 
-		size_t capacity()
+		size_t capacity()const
 		{
 			return _capacity;
 		}
 
-		size_t size()
+		size_t size()const 
 		{
 			return _size;
+		}
+
+		bool empty()const
+		{
+			return 0 == _size;
 		}
 
 		void reserve(size_t newCapacity)
@@ -215,30 +247,58 @@ namespace mine
 		void resize(size_t newsize, char ch)
 		{
 			size_t oldsize = size();
-			if (newsize < oldsize)
+			//if (newsize < oldsize)
+			//{
+			//	_size = newsize;
+			//	_str[_size] = '\0';
+			//}
+			//else if (newsize < _capacity)
+			//{
+			//	//直接填充
+			//	memset(_str + _size, ch, newsize - oldsize);
+			//	_size = newsize;
+			//	_str[_size] = '\0';
+			//}
+			//else
+			//{
+			//	reserve(newsize);
+			//	memset(_str + _size, ch, newsize - oldsize);
+			//	_size = newsize;
+			//	_str[_size] = '\0';
+			//}
+
+			if (newsize > oldsize)
 			{
-				_size = newsize;
-				_str[_size] = '\0';
-			}
-			else if (newsize < _capacity)
-			{
-				//直接填充
+				if (newsize > capacity())
+					reserve(newsize);
+
 				memset(_str + _size, ch, newsize - oldsize);
-				_size = newsize;
-				_str[_size] = '\0';
 			}
-			else
-			{
-				reserve(newsize);
-				memset(_str + _size, ch, newsize - oldsize);
-				_size = newsize;
-				_str[_size] = '\0';
-			}
+			_size = newsize;
+			_str[_size] = '\0';
 		}
 
 		void resize(size_t newsize)
 		{
 			resize(newsize, 0);
+		}
+
+		void clear()
+		{
+			_size = 0;
+			*_str = '\0';
+		}
+
+		//迭代器
+
+		iterator begin()
+		{
+			return _str;
+		}
+
+		iterator end()
+		{
+			return _str + _size;
 		}
 
 		void swap(string& s)
@@ -258,9 +318,94 @@ namespace mine
 				_size = 0;
 			}
 		}
+
+		char& operator[](size_t index)
+		{
+			assert(index < _size);
+			return _str[index];
+		}
+
+		const char& operator[](size_t index)const
+		{
+			assert(index < _size);
+			return _str[index];
+		}
+
+		void push_back(char ch)
+		{
+			if (_size == _capacity)
+				reserve(_size * 2);
+
+			_str[_size++] = ch;
+			_str[_size] = '\0';
+		}
+
+		string& operator +=(const char* s)
+		{
+			int len = strlen(s);
+			reserve(_size + len);
+			strcpy(_str + _size, s);
+			_size += len;
+			return *this;
+		}
+
+		const char* c_str()const
+		{
+			return _str;
+		}
+
+		size_t find(char ch, size_t pos)const
+		{
+			for (int i = pos; i < _size; i++)
+			{
+				if (ch == _str[i])
+					return i;
+			}
+			return npos;
+		}
+
+		size_t rfind(char ch, size_t pos)
+		{
+			for (int i = pos != npos ? pos : _size - 1; i >= 0; i--)
+			{
+				if (ch == _str[i])
+					return i;
+			}
+			return npos;
+		}
+
+		// 从pos位置开始，截取n个字符构造一个新的字符串返回
+		// "hello"---> pos:2   n: 5
+		string substr(size_t pos = 0, size_t n = npos)const
+		{
+			if (pos > _size)
+				pos = _size;
+
+			if (n > _size - pos)
+				n = _size - pos;
+
+			return string(*this, pos, n);
+		}
+
 	private:
 		char* _str;
 		size_t _capacity;
 		size_t _size;
+
+		static size_t npos;
 	};
+	size_t string::npos = -1;
+}
+
+ostream& mine::operator<<(ostream& _cout, const mine::string& s)
+{
+	// _cout << s._str;
+	for (size_t i = 0; i < s.size(); ++i)
+	{
+		if (s[i] == '\0')
+			cout << ' ';
+		else
+			cout << s[i];
+	}
+	return _cout;
 }
