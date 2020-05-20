@@ -212,6 +212,183 @@ void TestVector6()
 	cout << endl;
 }
 
+void TestVector7()
+{
+	Date d(2020, 5, 20);
+	vector<Date> v;
+	v.reserve(10);
+
+	//插入的是对象的拷贝
+	v.push_back(d);
+
+	//就地构造
+	v.emplace_back(2020.5,21);
+}
+
+void TestVector8()
+{
+	vector<int> v;
+	v.reserve(100);
+	size_t sz = v.capacity();
+	for (int i = 0; i < 100; i++)
+	{
+		v.push_back(i);
+		if (sz != v.capacity())
+		{
+			sz = v.capacity();
+			cout << sz << endl;
+		}
+	}
+}
+
+void TestVector9()
+{
+	vector<int> v{ 1,2,3,4,5 };
+	v.insert(v.begin() + 2, 0);
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+
+	v.insert(v.begin(), 5, 0);
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+
+	vector<int> vv{ 6,7,8 };
+	v.insert(v.end(), vv.begin(), vv.end());
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+
+	v.insert(v.end(), { 9,0 });
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+}
+
+void TestVector10()
+{
+	vector<int> v{ 1,2,3,4,5 ,6,7,8,9 };
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+
+	auto it = find(v.begin(), v.end(), 3);
+	if (it != v.end())
+		v.erase(it);
+
+	v.erase(v.begin());
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+
+	v.erase(v.begin() + 2);
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+
+	v.erase(v.begin(), v.begin() + 3);
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+
+	v.erase(v.begin(), v.end());
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+}
+
+void TestVector11()
+{
+	vector<int> v{ 1,2,3,4,5 };
+	auto it = v.begin();
+
+	//扩容导致迭代器失效
+	v.push_back(6);
+	v.push_back(7);
+
+	v.assign(10, 5);
+
+	//重新个it赋值到新空间的首地址就可以正常使用
+	it = v.begin();
+
+	while (it != v.end())
+	{
+		cout << *it << " ";
+		it++;
+	}
+	cout << endl;
+}
+
+void TestVector12()
+{
+	vector<int> v{ 9,33,1,2,3,4,5,6,7,8,9,0 };
+
+	//将vector中的所有的偶数都删除
+	auto it = v.begin();
+	while (it != v.end())
+	{
+		if (*it % 2 == 0)
+			it = v.erase(it);
+		else
+			it++;
+	}
+	for (auto e : v)
+		cout << e << " ";
+	cout << endl;
+}
+
+void TestVector13()
+{
+	vector<vector<int>> v1;
+	v1.resize(5);
+
+	cout << v1[0].size() << endl;
+	cout << v1[0].capacity() << endl;
+
+	for (int i = 0; i < v1.size(); i++)
+	{
+		v1[i].resize(6);
+		for (size_t j = 0; j < v1[i].size(); j++)
+			v1[i][j] = j + 1;
+	}
+
+	for (auto vrow : v1)
+	{
+		for (auto e : vrow)
+			cout << e << " ";
+		cout << endl;
+	}
+
+
+	vector<vector<int>> v2(5, vector<int>(6, 10));
+	for (auto vrow : v2)
+	{
+		for (auto e : vrow)
+			cout << e << " ";
+		cout << endl;
+	}
+}
+
+void TestVector14()
+{
+	vector<vector<int>> vv(5);
+
+	for (size_t i = 0; i < vv.size(); i++)
+	{
+		vv[i].resize(i+1,1);
+		for (size_t j = 1; j < i; j++)
+			vv[i][j] = vv[i - 1][j] + vv[i - 1][j - 1];
+	}
+
+	for (auto vrow : vv)
+	{
+		for (auto e : vrow)
+			cout << e << " ";
+		cout << endl;
+	}
+}
+
 int main()
 {
 	//TestVector1();
@@ -219,6 +396,9 @@ int main()
 	//TestVector3();
 	//TestVector4();
 	//TestVector5();
-	TestVector6();
+	//TestVector6();
+	//TestVector7();
+	//TestVector8();
+	TestVector14();
 	return 0;
 }
