@@ -1,4 +1,7 @@
 #pragma once
+
+#include <assert.h>
+
 namespace mine
 {
 	template<class T>
@@ -6,13 +9,14 @@ namespace mine
 	{
 	public:
 		typedef T* iterator;
+		typedef const T* const_iterator;
 	public:
 		vector()
 			:start(nullptr)
 			,finish(nullptr)
 			,end_of_storage(nullptr)
 		{}
-		vector(size_t n, const T& data = T())
+		vector(int n, const T& data = T())
 		{
 			start = new T[n];
 			for (size_t i = 0; i < n; i++)
@@ -26,7 +30,7 @@ namespace mine
 		{
 			size_t size = 0;
 			auto it = first;
-			while (it != last)
+			while (it++ != last)
 				size++;
 			start = new T[size];
 			finish = start;
@@ -50,8 +54,9 @@ namespace mine
 		~vector()
 		{
 			if (start)
-				delete[] start
-				start = finish = end_of_storage = nullptr;
+				delete[] start;
+
+			start = finish = end_of_storage = nullptr;
 		}
 
 		iterator begin()
@@ -59,6 +64,15 @@ namespace mine
 			return start;
 		}
 		iterator end()
+		{
+			return finish;
+		}
+
+		const_iterator begin()const
+		{
+			return start;
+		}
+		const_iterator end()const
 		{
 			return finish;
 		}
@@ -80,7 +94,7 @@ namespace mine
 			size_t oldsize = size();
 			if (newsize <= oldsize)
 			{
-
+				finish = start + newsize;
 			}
 			else
 			{
@@ -88,12 +102,33 @@ namespace mine
 				{
 					reserve(newsize);
 				}
+				
+				for (size_t i = oldsize; i < newsize; i++)
+					*finish++ = data;
 			}
 		}
 
 		void reserve(size_t newcapacity)
 		{
+			size_t oldcapacity = capacity();
+			if (newcapacity > oldcapacity)
+			{
+				T* temp = new T[newcapacity];
 
+				size_t oldsize = size();
+				if (start)
+				{
+					//Ç³¿½±´
+					//memcpy(temp, start, oldsize * sizeof(T));
+					for (size_t i = 0; i < oldsize; i++)
+						temp[i] = start[i];
+
+					delete[]start;
+				}
+				start = temp;
+				finish = start + oldsize;
+				end_of_storage = start + newcapacity;
+			}
 		}
 
 		T& operator[](size_t index)
@@ -107,7 +142,7 @@ namespace mine
 			return start[index];
 		}
 
-		T& front()const
+		T& front()
 		{
 			return *start;
 		}
@@ -115,7 +150,7 @@ namespace mine
 		{
 			return *start;
 		}
-		T& back()const
+		T& back()
 		{
 			return *(finish-1);
 		}
@@ -126,15 +161,52 @@ namespace mine
 
 		void push_back(const T& data)
 		{
-			insert(end(), data);
+			if (finish == end_of_storage)
+				reserve(2 * capacity());
+
+			*finish++ = data;
 		}
 		void pop_back()
 		{
-			insert(end() - 1);
+			erase(end() - 1);
 		}
-		iterator insert(iterator pos, const T& data);
-		iterator erase(iterator pos);
+		iterator insert(iterator pos, const T& data)
+		{
+			if (pos<start || pos>end())
+				return end();
 
+			if (finish == end_of_storage)
+				reserve(2 * capacity());
+
+			auto cur = finish - 1;
+			auto next = finish;
+			while (cur >= pos)
+				*next-- = *cur--;
+
+			*next = data;
+			finish++;
+			return pos;
+		}
+
+		iterator erase(iterator pos)
+		{
+			if (pos < start || pos >= finish)
+				return finish;
+
+			auto prev = pos;
+			auto cur = pos + 1;
+
+			while (cur <= finish)
+				*prev++ = *cur++;
+
+			finish--;
+			return pos;
+		}
+
+		void clear()
+		{
+			finish = start;
+		}
 	private:
 		iterator start;
 		iterator finish;
