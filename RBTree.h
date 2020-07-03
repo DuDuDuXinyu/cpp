@@ -178,6 +178,77 @@ private:
 			_InOrder(root->_right);
 		}
 	}
+
+	void RotateLeft(Node* parent)
+	{
+		Node* subR = parent->_right;
+		Node* subRL = subR->_left;
+
+		parent->_right = subRL;
+		if (subRL)
+			subRL->_parent = parent;
+
+		subR->_left = parent;
+
+		Node* pparent = parent->_parent;
+		subR->_parent = pparent;
+		parent->_parent = subR;
+
+		if (pparent == head)
+			head->_parent = subR;
+		else
+			if (parent == pparent->_left)
+				pparent->_left = subR;
+			else
+				pparent->_right = subR;
+	}
+
+	void RotateRight(Node* parent)
+	{
+		Node* subL = parent->_left;
+		Node* subLR = subL->_right;
+
+		parent->_left = subLR;
+		if (subLR)
+			subLR->_parent = parent;
+
+		subL->_right = parent;
+
+		Node* pparent = parent->_parent;
+		subL->_parent = pparent;
+		parent->_parent = subL;
+
+		if (pparent == head)
+			head->_parent = subL;
+		else
+			if (parent == pparent->_left)
+				pparent->_left = subL;
+			else
+				pparent->_right = subL;
+
+	}
+
 private:
 	Node* head;
 };
+
+void TestRBTree()
+{
+	int a[] = { 5, 3, 4, 1, 7, 8, 2, 6, 0, 9 };
+	RBTree<int> bt;
+	for (auto e : a)
+		bt.Insert(e);
+
+	bt.InOrder();
+	cout << bt.LeftMost()->_data << endl;
+	cout << bt.RightMost()->_data << endl;
+
+	if (bt.IsValidRBTree())
+	{
+		cout << "bt is rbtree!!!" << endl;
+	}
+	else
+	{
+		cout << "bt is not rbtree!!!" << endl;
+	}
+}
