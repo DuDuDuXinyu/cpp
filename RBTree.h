@@ -71,7 +71,63 @@ public:
 
 		cur->_parent = parent;
 
+		while (parent != head && RED == parent->_color)
+		{
+			Node* grandFather = parent->_parent;
+			if (parent == grandFather->_left)
+			{
+				Node* uncle = grandFather->_right;
+				if (uncle && RED == uncle->_color)
+				{
+					parent->_color = BLACK;
+					uncle->_color = BLACK;
+					grandFather->_color = RED;
+					cur = grandFather;
+					parent = cur->_parent;
+				}
+				else
+				{
+					if (cur == parent->_right)
+					{
+						RotateLeft(parent);
+						swap(parent, cur);
+					}
 
+					grandFather->_color = RED;
+					parent->_color = BLACK;
+					RotateRight(grandFather);
+				}
+			}
+			else
+			{
+				Node* uncle = grandFather->_left;
+				if (uncle && RED == uncle->_color)
+				{
+					parent->_color = BLACK;
+					uncle->_color = BLACK;
+					grandFather->_color = RED;
+					cur = grandFather;
+					parent = cur->_parent;
+				}
+				else
+				{
+					if (cur == parent->_left)
+					{
+						RotateRight(parent);
+						swap(parent, cur);
+					}
+
+					grandFather->_color = RED;
+					parent->_color = BLACK;
+					RotateLeft(grandFather);
+				}
+			}
+		}
+
+		root->_color = BLACK;
+		head->_left = LeftMost();
+		head->_right = RightMost();
+		return true;
 	}
 
 	void InOrder()
