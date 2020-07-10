@@ -118,3 +118,68 @@ private:
 	Node* _node;
 	HashBucket<T, K, KOFV, HF>* _ht;
 };
+
+template <class T,class K,class KOFV,class DF>
+class HashBucket
+{
+	friend class HashBucketIterator<T, K, KOFV, DF>;
+
+	typedef HashBUcket<T> Node;
+	typedef HashBucket<T, K, KOFV, DF> Self;
+
+public:
+	typedef HashBucketIterator<T, K, KOFV, DF> iterator;
+
+public:
+	HashBucket(size_t initCap=10)
+		:_table(GetNextPrime(initCap))
+		,_size(0)
+	{}
+
+	~HashBucket()
+	{
+		Clear();
+	}
+
+	iterator begin()
+	{
+		for (size_t bucketNo = 0; bucketNo < BucketCount(); bucketNo++)
+		{
+			if (_table[bucketNo])
+				return iterator(this, _table[bucketNo]);
+		}
+	}
+
+	iterator end()
+	{
+		return iterator(this, nullptr);
+	}
+
+	pair<iterator, bool> Insert(const T& data)
+	{
+		CheckCapacity();
+
+		size_t bucketNo = HashFunc(KOFV()(data));
+		Node* cur = _table[bucketNo];
+
+		while (cur)
+		{
+			if (KOFV()(cur->data) == KOFV()(data))
+				return make_pair(iterator(this, cur), false);
+
+			cur = cur->_next;
+		}
+
+		cur = cur->_next;
+
+		cur = new Node(data);
+		_table[bucketNo] = cur;
+		_size++;
+		return make_pair(iterator(this, cur), ture);
+	}
+
+	size_t Delete(const K& key)
+	{
+		size_t bucketNo = HashFunc(key);
+	}
+};
