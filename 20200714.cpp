@@ -8,6 +8,8 @@ int fun(int n)
 		return 1;
 	else
 		return 2 * fun(n - 1);
+
+	//return 1<<(n-1);
 }
 
 int main()
